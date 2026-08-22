@@ -7,14 +7,6 @@
 // Re-export core modules from k7s-core instead of duplicating them
 pub use k7s_core::{ai, core, error, kube};
 
-// Web and MCP servers are now in the k7s-server crate.
-// Re-export for backward compatibility so existing bin entry points work.
-#[cfg(feature = "web")]
-pub use k7s_server::web;
-
-#[cfg(any(feature = "mcp", feature = "web"))]
-pub use k7s_server::mcp;
-
 pub use error::{AppError, AppResult};
 
 // Re-export k7s-deps for downstream consumers
