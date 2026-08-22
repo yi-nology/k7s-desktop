@@ -28,6 +28,7 @@ tauri-plugin-dialog.workspace = true
 tauri-plugin-window-state.workspace = true
 
 # --- Internal crates (path deps inside the workspace) ---
+k7s-commands = { path = "../k7s-commands" }
 k7s-deps.workspace = true
 k7s-core = { workspace = true, features = ["tauri"] }
 k7s-server.workspace = true
