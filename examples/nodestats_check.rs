@@ -10,8 +10,8 @@ use k7s_deps::k8s_openapi::api::core::v1::Node;
 use k7s_deps::kube::api::{Api, ListParams};
 use k7s_deps::kube::{Client, ResourceExt};
 use k7s_deps::tokio::sync::{mpsc, oneshot};
-use k7s_lib::kube::exporter::{self, Sampler};
-use k7s_lib::kube::nodestats;
+use k7s_lib::kube::observability::exporter::{self, Sampler};
+use k7s_lib::kube::observability::nodestats;
 use std::time::Duration;
 
 #[k7s_deps::tokio::main]
