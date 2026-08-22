@@ -1,13 +1,14 @@
 [package]
 name = "k7s"
-version.workspace = true
+version = "0.4.3"
 description = "k7s — a Lens-style Kubernetes visual monitor"
-authors.workspace = true
-edition.workspace = true
+authors = ["k7s"]
+edition = "2021"
 default-run = "k7s"
-# Workspace pins 1.77.2: tauri-plugin-window-state 2.x declares it, and cargo
-# silently downgrades that plugin to a v0.1.1 built for Tauri v1 below that.
-rust-version.workspace = true
+# 1.77.2 is what our dependency set actually needs (tauri-plugin-window-state
+# 2.x declares it). Leaving this at 1.77 silently resolved that plugin to a
+# v0.1.1 built for Tauri v1 — cargo downgrades rather than complains.
+rust-version = "1.77.2"
 
 # The library crate holds all app logic (commands, kube plumbing) so it can be
 # unit-tested with `cargo test`; main.rs is a thin binary that calls into it.
@@ -16,27 +17,27 @@ name = "k7s_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build.workspace = true
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
 # --- Tauri shell ---
-tauri.workspace = true
-tauri-plugin-shell.workspace = true
+tauri = { version = "2", features = [] }
+tauri-plugin-shell = "2"
 # Native file-open dialog for the "Import kubeconfig" action.
-tauri-plugin-dialog.workspace = true
+tauri-plugin-dialog = "2"
 # Remembers window size/position/monitor across launches (B22).
-tauri-plugin-window-state.workspace = true
+tauri-plugin-window-state = "2"
 
-# --- Internal crates (path deps inside the workspace) ---
-k7s-commands = { path = "../k7s-commands" }
-k7s-deps.workspace = true
-k7s-core = { workspace = true, features = ["tauri"] }
-k7s-server.workspace = true
+# --- Shared crates (git deps; the monorepo root [patch] redirects to local) ---
+k7s-deps = { git = "https://github.com/yi-nology/k7s-deps.git" }
+k7s-core = { git = "https://github.com/yi-nology/k7s-core.git", features = ["tauri"] }
+k7s-commands = { git = "https://github.com/yi-nology/k7s-commands.git" }
+k7s-server = { git = "https://github.com/yi-nology/k7s-server.git" }
 
 # --- Proc-macro dependencies (must be in extern prelude) ---
-serde.workspace = true
-thiserror.workspace = true
-tokio.workspace = true
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "process", "signal", "sync", "time"] }
 
 [features]
 # Reserved for future custom-protocol tweaks; kept so tauri.conf can reference it.
@@ -53,6 +54,13 @@ name = "k7s"
 path = "src/main.rs"
 
 [dev-dependencies]
-proptest.workspace = true
-tower.workspace = true
-http-body-util.workspace = true
+proptest = "1"
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
+
+[profile.release]
+# Smaller, faster desktop binary.
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

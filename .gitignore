@@ -5,3 +5,5 @@ gen/
 .env
 .env.*
 !.env.example
+/dist/
+/target/
